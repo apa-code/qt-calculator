@@ -19,9 +19,9 @@ private:
     Ui::Calculator *ui;
 
 private slots:
-    void NumPressed();
+    void NumButtonPressed();
     void MathButtonPressed();
-    void EqualButton();
-    void ChangeNumSign();
+    void EqualsButtonPressed();
+    void ChangeSignButtonPressed();
 };
 #endif // CALCULATOR_H

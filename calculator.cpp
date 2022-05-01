@@ -31,7 +31,7 @@ Calculator::~Calculator()
     delete ui;
 }
 
-void Calculator::NumPressed()
+void Calculator::NumButtonPressed()
 {
     QPushButton* button = (QPushButton*)sender();
 
@@ -53,13 +53,42 @@ void Calculator::NumPressed()
 
 void Calculator::MathButtonPressed()
 {
+    divTrigger = false;
+    mulTrigger = false;
+    addTrigger = false;
+    subTrigger = false;
+
+    QString displayVal = ui->Display->text();
+    calcVal = displayVal.toDouble();
+
+    QPushButton* button = (QPushButton*)sender();
+    QString butVal = button->text();
+
+    if (QString::compare(butVal, "/", Qt::CaseInsensitive) == 0)
+    {
+        divTrigger = true;
+    }
+    else if (QString::compare(butVal, "*", Qt::CaseInsensitive) == 0)
+    {
+        mulTrigger = true;
+    }
+    else if (QString::compare(butVal, "+", Qt::CaseInsensitive) == 0)
+    {
+        addTrigger = true;
+    }
+    else
+    {
+        subTrigger = true;
+    }
+
+    ui->Display->setText("");
 }
 
-void Calculator::EqualButton()
+void Calculator::EqualsButtonPressed()
 {
 }
 
-void Calculator::ChangeNumSign()
+void Calculator::ChangeSignButtonPressed()
 {
 }
 
