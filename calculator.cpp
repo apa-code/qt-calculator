@@ -30,6 +30,7 @@ Calculator::Calculator(QWidget *parent)
     connect(ui->Multiply, SIGNAL(released()), this, SLOT(MathButtonPressed()));
     connect(ui->Divide, SIGNAL(released()), this, SLOT(MathButtonPressed()));
     connect(ui->Equals, SIGNAL(released()), this, SLOT(EqualsButtonPressed()));
+    connect(ui->Clear, SIGNAL(released()), this, SLOT(Clear()));
 }
 
 Calculator::~Calculator()
@@ -39,12 +40,8 @@ Calculator::~Calculator()
 
 void Calculator::NumButtonPressed()
 {
-    // Clear display for new calculations
     if (resultVal != 0.0)
-    {
-        ui->Display->setText("");
-        resultVal = 0.0;
-    }
+        Clear();
 
     QPushButton* button = (QPushButton*)sender();
 
@@ -105,5 +102,13 @@ void Calculator::EqualsButtonPressed()
 
 void Calculator::ChangeSignButtonPressed()
 {
+}
+
+void Calculator::Clear()
+{
+    calcVal = 0.0;
+    resultVal = 0.0;
+    mathOperationKey = 0;
+    ui->Display->setText(QString::number(calcVal));
 }
 
