@@ -1,11 +1,11 @@
 #include "calculator.h"
 #include "ui_calculator.h"
 
+using namespace std;
+
 double calcVal = 0.0;
-bool divTrigger = false;
-bool mulTrigger = false;
-bool addTrigger = false;
-bool subTrigger = false;
+double resultVal = 0.0;
+int mathOperationKey = 0;
 
 Calculator::Calculator(QWidget *parent)
     : QMainWindow(parent)
@@ -21,9 +21,15 @@ Calculator::Calculator(QWidget *parent)
 
         numButtons[i] = Calculator::findChild<QPushButton*>(butName);
 
-        connect(numButtons[i], SIGNAL(released()), this, SLOT(NumPressed()));
+        connect(numButtons[i], SIGNAL(released()), this, SLOT(NumButtonPressed()));
 
     }
+
+    connect(ui->Add, SIGNAL(released()), this, SLOT(MathButtonPressed()));
+    connect(ui->Subtract, SIGNAL(released()), this, SLOT(MathButtonPressed()));
+    connect(ui->Multiply, SIGNAL(released()), this, SLOT(MathButtonPressed()));
+    connect(ui->Divide, SIGNAL(released()), this, SLOT(MathButtonPressed()));
+    connect(ui->Equals, SIGNAL(released()), this, SLOT(EqualsButtonPressed()));
 }
 
 Calculator::~Calculator()
@@ -33,6 +39,13 @@ Calculator::~Calculator()
 
 void Calculator::NumButtonPressed()
 {
+    // Clear display for new calculations
+    if (resultVal != 0.0)
+    {
+        ui->Display->setText("");
+        resultVal = 0.0;
+    }
+
     QPushButton* button = (QPushButton*)sender();
 
     QString butVal = button->text();
@@ -53,39 +66,41 @@ void Calculator::NumButtonPressed()
 
 void Calculator::MathButtonPressed()
 {
-    divTrigger = false;
-    mulTrigger = false;
-    addTrigger = false;
-    subTrigger = false;
+    calcVal = ui->Display->text().toDouble();
 
-    QString displayVal = ui->Display->text();
-    calcVal = displayVal.toDouble();
+    QString butVal = ((QPushButton*)sender())->text();
 
-    QPushButton* button = (QPushButton*)sender();
-    QString butVal = button->text();
+    mathOperationKey = butVal.toUtf8().constData()[0];
 
-    if (QString::compare(butVal, "/", Qt::CaseInsensitive) == 0)
-    {
-        divTrigger = true;
-    }
-    else if (QString::compare(butVal, "*", Qt::CaseInsensitive) == 0)
-    {
-        mulTrigger = true;
-    }
-    else if (QString::compare(butVal, "+", Qt::CaseInsensitive) == 0)
-    {
-        addTrigger = true;
-    }
-    else
-    {
-        subTrigger = true;
-    }
-
-    ui->Display->setText("");
+    ui->Display->setText(butVal);
 }
 
 void Calculator::EqualsButtonPressed()
 {
+    double displayVal = ui->Display->text().toDouble();
+
+    if (mathOperationKey == 0)
+        return;
+
+    switch (mathOperationKey)
+    {
+        case 43:
+            resultVal = calcVal + displayVal;
+            break;
+        case 45:
+            resultVal = calcVal - displayVal;
+            break;
+        case 42:
+            resultVal = calcVal * displayVal;
+            break;
+        case 47:
+            resultVal = calcVal / displayVal;
+            break;
+        default:
+            break;
+    }
+
+    ui->Display->setText(QString::number(resultVal));
 }
 
 void Calculator::ChangeSignButtonPressed()
